@@ -11,26 +11,38 @@ import dcode
 app = Flask(__name__)
 app.secret_key = 'secret key!!'
 
-app.config['MYSQL_DATABASE_HOST'] = '127.0.0.1'
-app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = ''
-app.config['MYSQL_DATABASE_DB'] = 'bruno'
+flag_online = True
 
-db = 0
+if flag_online:
+    app.config['MYSQL_DATABASE_HOST'] = '52.74.77.8'
+    app.config['MYSQL_DATABASE_USER'] = 'sql6140018'
+    app.config['MYSQL_DATABASE_PASSWORD'] = 'c2LLhiRL7D'
+    app.config['MYSQL_DATABASE_DB'] = 'sql6140018'
+    print('set to online DB')
+else:
+    app.config['MYSQL_DATABASE_HOST'] = '127.0.0.1'
+    app.config['MYSQL_DATABASE_USER'] = 'root'
+    app.config['MYSQL_DATABASE_PASSWORD'] = ''
+    app.config['MYSQL_DATABASE_DB'] = 'bruno'
+    print('set to local DB')
+
+flag_db_fail = False
 try:
     sq = MySQL()
     sq.init_app(app)
     sq_connect = sq.connect()
     sq_cursor = sq_connect.cursor()
+    print('connected to DB')
 except:
-    db = 1
+    print('failed to connect to DB')
+    flag_db_fail = True
 
 wsgi_app = app.wsgi_app
 
 
 @app.route('/')
 def root():
-    if db == 1:
+    if flag_db_fail:
         return render_template('Error.html', ErrMsg='Online DB Connect Error')
 
     loc_from = request.args.get('loc_from')
@@ -213,4 +225,4 @@ if __name__ == '__main__':
         PORT = int(os.environ.get('SERVER_PORT', '5555'))
     except ValueError:
         PORT = 5555
-    app.run(HOST, PORT)
+    app.run(HOST, PORT, debug=True)

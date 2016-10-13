@@ -7,12 +7,23 @@
     <link rel="stylesheet" href="/static/css/jquery-ui.min.css">
     <script src="/static/js/jquery-3.1.0.min.js"></script>
     <script src="/static/js/jquery-ui.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
 </head>
 <body>
-    <div class="container" style="max-width:500px; margin-top:3em">
+    <div class="container fluid" style="margin-top:3em">
 
-        <!--sSearch bar-->
+        <!--Header (Heading and Admin Login Button)-->
         <div class="row">
+            <div class="col-xs-8"><h2>Search bus timing</h2></div>
+            <div class="col-xs-4">
+                <a href="/dashboard" class="btn btn-info">
+                    Admin <span class="glyphicon glyphicon-user"></span>
+                </a>
+            </div>
+        </div>
+
+        <!--Search bar-->
+        <div class="row" style="margin-top:10px">
             <form action="/">
                 <div class="col-xs-4">
                     <input type="text" class="form-control d-bsb" name="loc_from" placeholder="Start Point" required="" autofocus="" />
