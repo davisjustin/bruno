@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:display="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Here</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/jquery-ui.min.css">
+    <script src="/static/js/jquery-3.1.0.min.js"></script>
+    <script src="/static/js/jquery-ui.min.js"></script>
+</head>
+<body>
+    <div class="container" style="max-width:500px; margin-top:3em">
+
+        <!--sSearch bar-->
+        <div class="row">
+            <form action="/">
+                <div class="col-xs-4">
+                    <input type="text" class="form-control d-bsb" name="loc_from" placeholder="Start Point" required="" autofocus="" />
+                </div>
+                <div class="col-xs-4">
+                    <input type="text" class="form-control d-bsb" name="loc_dest" placeholder="End Point" required=""/>
+                </div>
+                <div class="col-xs-2">
+                    <input class="btn btn-primary" type="submit" value="Search">
+                </div>
+            </form>
+        </div>
+
+        <!--Error Message "NO BUS"-->
+        <div class="alert alert-danger fade in"
+        {% if no_bus %} style="margin-top:2em" {% else %} style="display:none" {% endif %} >
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times</a>No buses found
+        </div>
+
+        <!--Search Result-->
+        <div {% if no_result %} style="display:none" {% endif %}>
+            <h2>Bus Timings</h2>
+            <table class="table table-sm table-stripped">
+                <thead>
+                <tr>
+                    <th>Bus No</th>
+                    <th>{{ bus_start_point }}</th>
+                    <th>{{ bus_end_point }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in res_data %}
+                <tr>
+                    <td>{{ item[0] }}</td>
+                    <td>{{ item[1] }}</td>
+                    <td>{{ item[2] }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+    <script>
+        $( ".d-bsb" ).autocomplete({ source: {{ auto_comp_list|safe }} });
+    </script>
+</body>
+</html>

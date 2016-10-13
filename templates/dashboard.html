@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/bootstrap-timepicker.min.css">
+    <link rel="stylesheet" href="/static/css/jquery-ui.min.css">
+    <script src="/static/js/jquery-3.1.0.min.js"></script>
+    <script src="/static/js/jquery-ui.min.js"></script>
+    <script src="/static/js/bootstrap-timepicker.min.js"></script>
+    <style>
+        .d-center{ text-align: center; }
+        .wL{ width: 95%; }
+        .pF{ padding-left:2px; padding-right:2px; }
+        .pM{ padding-left:4px; padding-right:4px; }
+    </style>
+</head>
+<body>
+
+    <div class="container" style="max-width:500px; margin-top:3em">
+
+        <!--Headings, Lists and Buttons-->
+        <div class="row">
+            <!--COL 1-->
+            <div class="col-xs-4">
+                <div class="row d-center">
+                    <h3>Bus No.</h3>
+                </div>
+                <!--Bus list-->
+                <form action="/dashboard" method="post" class="wL">
+                    <input type="text" name="task" value="del-bus" style="display:none">
+                    <div class="row d-center">
+                        <select id="bus-id-list" class="form-control" name="bus-id" multiple>
+                            {% for item in bus_ids %}<option value="{{ item }}">{{ item }}{% endfor %}
+                        </select>
+                    </div>
+                    <div class="row d-center">
+                        <input type="submit" class="btn btn-danger wL" value="Delete" style="margin-top:10px;">
+                    </div>
+                </form>
+            </div>
+            <!--COL 2-->
+            <div class="col-xs-4">
+                <div class="row d-center">
+                    <h3>Schedule</h3>
+                </div>
+                <!--Schedule list-->
+                <form action="/dashboard" method="post" class="wL">
+                    <input type="text" name="task" value="del-schedule" style="display:none">
+                    <div class="row d-center">
+                        <select id="bus-schedule" class="form-control" name="bus-schedule" multiple>
+                            <option disabled>Select bus</option>
+                        </select>
+                    </div>
+                    <div class="row d-center">
+                        <input type="submit" class="btn btn-danger wL" value="Delete" style="margin-top:10px;">
+                    </div>
+                </form>
+            </div>
+            <!--COL 3-->
+            <div class="col-xs-4">
+                <div class="row d-center">
+                    <h3>Trips</h3>
+                </div>
+                <!--trips list-->
+                <form action="/dashboard" method="post" class="wL">
+                    <input type="text" name="task" value="del-trip" style="display:none">
+                    <div class="row d-center">
+                        <select class="form-control" id="bus-trips" name="bus-trip" multiple>
+                            <option disabled>Select bus</option>
+                        </select>
+                    </div>
+                    <div class="row d-center">
+                        <input type="submit" class="btn btn-danger wL" value="Delete"
+                               style="margin-top:10px;">
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!--Add bus and schedule data field-->
+        <div class="row" style="margin-top:35px">
+            <form action="/dashboard" method="post">
+                <input type="text" name="task" value="add-schedule" style="display:none">
+                <!-- text fields -->
+                <div class="col-xs-10">
+                    <div class="col-xs-4 pF">
+                        <input type="text" class="form-control" id="bus-id" name="bus-id" placeholder="Bus ID" required autofocus>
+                    </div>
+                    <div class="col-xs-4 pF">
+                        <input type="text" class="form-control" id="bus-stop" name="bus-stop" placeholder="Bus Stop" required>
+                    </div>
+                    <div class="col-xs-4 pF">
+                        <input type="text" class="form-control" name="bus-stop-time" placeholder="Time (mins)" title="Elapsed time from start point (in minutes)" required>
+                    </div>
+                </div>
+                <!-- submit button -->
+                <div class="col-xs-2 pM">
+                    <input type="submit" class="btn btn-primary" value="Add" style="left:0; right:0;">
+                </div>
+            </form>
+        </div>
+
+        <!--Add trip-->
+        <div class="row" style="margin-top:20px">
+            <form action="/dashboard" method="post">
+                <input type="text" name="task" value="add-trip" style="display:none">
+                <div class="col-xs-10">
+                    <div class="col-xs-6 pF">
+                        <select class="form-control" name="trip-bus">
+                            <option disabled selected>Select Bus</option>
+                            {% for id in bus_ids %}<option value="{{ id }}">{{ id }}</option>{% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-xs-6 pF">
+                        <div class="input-group bootstrap-timepicker timepicker">
+                            <input id="tp-trip" name="trip-time" type="text" class="form-control input-small">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-2 pM">
+                    <input type="submit" class="btn btn-primary" value="Add">
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+    <script>
+        $( "#tp-trip" ).timepicker();
+        $( "#bus-id" ).autocomplete({ source: {{ bus_ids|safe }} });
+        $( "#bus-stop" ).autocomplete({ source: {{ stop_names|safe }} });
+
+        $('#bus-id-list').bind('change', function() {
+            var id = $('#bus-id-list').find(':selected').val();
+            $.getJSON(
+                '/ajax',
+                { sel_bus_id: id },
+                function(data) {
+                    $('#bus-schedule').empty();
+                    $(data[0]).each( function(i){
+                        $('#bus-schedule').append(
+                            "<option value=\"" + id + "/" + data[0][i][1] + "\">" +
+                                data[0][i][1] + " @ " + data[0][i][0] +
+                            "</option>"
+                        );
+                    });
+                    $('#bus-trips').empty();
+                    $(data[1]).each(function(i){
+                        $('#bus-trips').append( "<option value=\"" + id + "/" + data[1][i] + "\">" + data[1][i] + "</option>" );
+                    });
+                }
+            );
+            return false;
+        });
+    </script>
+</body>
+</html>

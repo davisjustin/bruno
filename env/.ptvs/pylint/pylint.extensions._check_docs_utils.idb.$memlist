@@ -1,0 +1,13 @@
+returns_something
+SphinxDocstring
+GoogleDocstring
+absolute_import
+possible_exc_types
+astroid
+print_function
+Docstring
+node_ignores_exception
+space_indentation
+docstringify
+re
+NumpyDocstring

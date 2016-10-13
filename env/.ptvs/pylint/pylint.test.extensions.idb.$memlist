@@ -1,0 +1,8 @@
+test_check_return_docs
+test_elseif_used
+test_check_docs
+test_check_mccabe
+test_check_raise_docs
+test_docstyle
+test_check_docs_utils
+test_bad_builtin

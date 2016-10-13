@@ -1,0 +1,15 @@
+itertools
+_inspected_modules
+_import_gi_module
+_register_require_version
+MANAGER
+inspect
+re
+warnings
+_looks_like_require_version
+_gi_build_stub
+AstroidBuildingException
+_identifier_re
+AstroidBuilder
+nodes
+sys

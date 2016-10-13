@@ -1,0 +1,12 @@
+ComparisonTest
+set_config
+NameCheckerTest
+CheckerTestCase
+base
+astroid
+Message
+MultiNamingStyleTest
+DocstringTest
+test_utils
+re
+unittest
